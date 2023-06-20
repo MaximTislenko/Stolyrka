@@ -1,0 +1,77 @@
+#include <FreqCount.h>		      //  Подключение библиотеки для частоты от 1 кГц до 8 МГц
+#include <FreqMeasure.h>	      //  Подключение библиотеки для частоты от 0,1 Гц до 1 кГц
+#include <Wire.h>                     //  Подключаем библиотеку для работы с шиной I2C
+#include <LiquidCrystal_I2C.h>        //  Подключаем библиотеку для работы с LCD дисплеем по шине I2C
+
+LiquidCrystal_I2C lcd(0x27,16,2);     //  Объявляем  объект библиотеки, указывая параметры дисплея (адрес I2C = 0x27, количество столбцов = 16, количество строк = 2)
+
+uint8_t symbol[6][8] = 			//  Объявляем массив из 6 собственных символов (Ч т Г я к ц), каждый символ состоит из 8 байт
+{              
+	{17, 17, 17, 17, 15, 1, 1, 0},      //  Ч
+        {0, 0, 31, 4, 4, 4, 4, 0},          //  т
+        {31, 16, 16, 16, 16, 16, 16, 0},    //  Г
+        {0, 0, 15, 17, 15, 5, 9, 0},        //  я
+        {0, 0, 18, 20, 24, 20, 18, 0},      //  к
+        {0, 0, 18, 18, 18, 18, 31, 1}	    //  ц
+};
+
+  
+
+
+                                      
+void setup()
+{
+	Serial.begin(57600);
+	lcd.init();                       //  Инициируем работу с LCD дисплеем
+	lcd.backlight();                  //  Включаем подсветку LCD дисплея
+	lcd.createChar(1, symbol[0]);     //  Загружаем 1 символ "Ч" в ОЗУ дисплея
+	lcd.createChar(2, symbol[1]);     //  Загружаем 2 символ "т" в ОЗУ дисплея
+	lcd.createChar(3, symbol[2]);     //  Загружаем 3 символ "Г" в ОЗУ дисплея
+	lcd.createChar(4, symbol[3]);     //  Загружаем 4 символ "я" в ОЗУ дисплея
+	lcd.createChar(5, symbol[4]);     //  Загружаем 5 символ "к" в ОЗУ дисплея
+	lcd.createChar(6, symbol[5]);     //  Загружаем 6 символ "ц" в ОЗУ дисплея
+	lcd.setCursor(0, 0);              //  Устанавливаем курсор в позицию (0 столбец, 0 строка)
+	lcd.print("\1ac\2o\2a, \3\6:");   //  Выводим текст "Частота, Гц:", из ОЗУ дисплея
+	lcd.setCursor(1,1);		  //  Устанавливаем курсор в позицию (1 столбец, 1 строка) 
+}
+
+
+
+
+void loop()
+{
+	FreqMeasure.begin();
+	double sum=0;
+	int count = 0;
+	if (FreqMeasure.avilable()) 
+	{
+		sum = sum + FreqMeasure.read();
+		count = count + 1;
+		if (count > 10) 
+		{
+			float frequeny = FreqMeasure.countToFrequensy(sum / count);
+			if (frequency <=1000)
+			{
+				lcd.print(frequency);
+				sum = 0;
+				count = 0;
+			}
+			else
+			{
+				FreqMeasure.end();
+				FreqCount.begin(1000);
+				if(FreqCount.available())
+				{
+				unsigned long frequency_FC = FreqCount.read();
+				lsd.print(frequency_FC);
+				FreqCount.end();
+				//lcd.print("       ");
+				}
+			}
+		}	
+	}
+
+
+}
+
+ 
