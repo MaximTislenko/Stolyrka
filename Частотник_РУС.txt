@@ -40,31 +40,31 @@ void setup()
 
 void loop()
 {
-	FreqMeasure.begin();
-	double sum=0;
-	int count = 0;
-	if (FreqMeasure.avilable()) 
+	FreqMeasure.begin();	// Запуск счетчика одного периода
+	double sum=0;		//Объявление переменой, в ячейке 0
+	int count = 0;		//Объявление переменной в ячейке 0
+	if (FreqMeasure.avilable())    //Условие на готовность измерения
 	{
-		sum = sum + FreqMeasure.read();
-		count = count + 1;
-		if (count > 10) 
+		sum = sum + FreqMeasure.read(); //Складывание (сумирование) всех измерений в ячейку 
+		count = count + 1;		//Счетчик количества измерений
+		if (count > 10) 		//Условие на переполнение счетчика
 		{
-			float frequeny = FreqMeasure.countToFrequensy(sum / count);
-			if (frequency <=1000)
+			float frequeny = FreqMeasure.countToFrequensy(sum / count);  //Вычесление среднего зачения измерений
+			if (frequency <=1000)   //Условие на значение частоты (если частота  <= 1000 Гц), то
 			{
-				lcd.print(frequency);
-				sum = 0;
-				count = 0;
+				lcd.print(frequency); // вывод на экран
+				sum = 0;	      // обнуление переменной
+				count = 0;	      // обнуление счетчика
 			}
-			else
+			else			// иначе (если частота > 1000 Гц)
 			{
-				FreqMeasure.end();
-				FreqCount.begin(1000);
-				if(FreqCount.available())
+				FreqMeasure.end();		// остановка счетчика одного периода
+				FreqCount.begin(1000);		//запуск счетчика количества периодов за 1 секунду
+				if(FreqCount.available())	//Условие на готовность измерения
 				{
-				unsigned long frequency_FC = FreqCount.read();
-				lsd.print(frequency_FC);
-				FreqCount.end();
+				unsigned long frequency_FC = FreqCount.read();	// объявление переменной и запись результата в неё
+				lsd.print(frequency_FC);			// вывод на экран
+				FreqCount.end();				//остановка счетчика количества периодов за 1 секунду
 				//lcd.print("       ");
 				}
 			}
