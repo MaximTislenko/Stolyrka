@@ -1,0 +1,47 @@
+// РЕЗЬБА
+// чем больше числа, тем дольше расчет!!!
+// при очень больших значениях не считает
+CHI=6; // число витков [мм]
+DH=30; // длина резьбы [мм]
+DIAM=30; // внутренний диаметр резьбы [мм]
+
+Ah=5; // ширина основания витка [мм]
+Bh=0.3; // ширина верхней части витка [мм]
+Ch=2; // высота витка [мм]
+Ph=0.3; // толщина [мм]
+
+ANGLE=360*CHI;
+
+N=1000*0.1*DIAM*0.1*CHI;
+
+color("lightgray"){
+for (i=[0:N]) {
+    
+    hull() {
+translate([DIAM/2*cos(i*ANGLE/N),DIAM/2*sin(i*ANGLE/N),i*DH/N])
+rotate(a=55,v=[0,0,1])      
+rotate(a=-135+i*ANGLE/N,v=[0,0,1])
+rotate(a=90,v=[0,1,0])              
+//rotate(a=180,v=[0,0,1])  
+linear_extrude(convexity=2,height=Ph)
+polygon([[-Ah/2,0],[-Bh/2,Ch],[Bh/2,Ch],[Ah/2,0]]);
+    
+    
+translate([DIAM/2*cos((i+1)*ANGLE/N),DIAM/2*sin((i+1)*ANGLE/N),(i+1)*DH/N])
+rotate(a=55,v=[0,0,1])      
+rotate(a=-135+i*ANGLE/N,v=[0,0,1])    
+rotate(a=90,v=[0,1,0])              
+//rotate(a=180,v=[0,0,1])  
+linear_extrude(convexity=2,height=Ph)
+polygon([[-Ah/2,0],[-Bh/2,Ch],[Bh/2,Ch],[Ah/2,0]]);  
+} 
+}
+translate([0,0,DH/2])
+cylinder($fn=100, h=DH+10, d1=DIAM+0.2, d2=DIAM+0.2, center=true);
+}
+
+==================================================================================================
+
+
+
+
